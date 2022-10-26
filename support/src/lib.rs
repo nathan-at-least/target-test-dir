@@ -22,6 +22,10 @@ fn init_base_test_dir() -> std::io::Result<PathBuf> {
     Ok(pb)
 }
 
+/// Attempt to return the crate or workspace `target/` directory
+///
+/// Precondition: the executable path resides within the `target/` directory. This is the case for
+/// standard `cargo test` runs, AFAIK.
 fn get_target_dir() -> std::io::Result<PathBuf> {
     for candidate in std::env::current_exe()?.ancestors() {
         if candidate.is_dir() && candidate.file_name().and_then(|os| os.to_str()) == Some("target")
