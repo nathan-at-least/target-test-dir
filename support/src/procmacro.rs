@@ -11,8 +11,30 @@ where
 }
 
 fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn::parse::Error> {
-    use syn::{parse2, ItemFn};
+    use quote::quote;
+    use syn::{parse2, Ident, ItemFn};
 
-    let _implfn: ItemFn = parse2(input)?;
-    todo!();
+    let mut implfn: ItemFn = parse2(input)?;
+
+    // Save the textual name for a generated wrapper function so that the actual #[test] has the
+    // user-specified name:
+    let testname = implfn.sig.ident;
+
+    // Rename the user-provided implementation function to be wrapped:
+    let implname = Ident::new(&format!("{}_impl", &testname), testname.span());
+    implfn.sig.ident = implname.clone();
+
+    // TODO: propagate the user test return type.
+    Ok(quote! {
+        #[test]
+        fn #testname() {
+            let testdir =
+            ::target_test_dir_support::get_base_test_dir()
+                .join(format!("{}-{}". module_path!().replace("::", "-"), #testname));
+
+            #implname (testdir)
+        }
+
+        #implfn
+    })
 }
