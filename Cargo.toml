@@ -1,6 +1,7 @@
 [workspace]
 members = [
-  "support"
+  "support",
+  "target-test-dir",
 ]
 
 [workspace.package]
