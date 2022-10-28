@@ -7,3 +7,5 @@ edition.workspace = true
 
 [dependencies]
 once_cell.workspace = true
+proc-macro2.workspace = true
+syn.workspace = true
