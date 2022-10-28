@@ -19,9 +19,10 @@ fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn:
     // Save the textual name for a generated wrapper function so that the actual #[test] has the
     // user-specified name:
     let testname = implfn.sig.ident;
+    let testnamestr = testname.to_string();
 
     // Rename the user-provided implementation function to be wrapped:
-    let implname = Ident::new(&format!("{}_impl", &testname), testname.span());
+    let implname = Ident::new(&format!("{}_impl", &testnamestr), testname.span());
     implfn.sig.ident = implname.clone();
 
     // TODO: propagate the user test return type.
@@ -30,7 +31,14 @@ fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn:
         fn #testname() {
             let testdir =
             ::target_test_dir_support::get_base_test_dir()
-                .join(format!("{}-{}". module_path!().replace("::", "-"), #testname));
+                .join(format!("{}-{}", module_path!().replace("::", "-"), #testnamestr));
+
+            match std::fs::create_dir(&testdir) {
+                Ok(()) => {}
+                Err(e) => {
+                    panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                }
+            }
 
             #implname (testdir)
         }
