@@ -50,3 +50,6 @@ fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn:
         #implfn
     })
 }
+
+#[cfg(test)]
+mod tests;
