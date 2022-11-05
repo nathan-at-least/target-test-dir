@@ -6,7 +6,7 @@ The [target-test-dir](crate) crate provides a convenient proc-macro [macro@test_
 
 Your tests need to depend on both the [target-test-dir](crate) and [target-test-dir-support](target_test_dir_support) crates, so `Cargo.toml` includes:
 
-```
+```ignore
 [dev-dependencies]
 target-test-dir = "0.1.0"
 target-test-dir-support = "0.1.0"
