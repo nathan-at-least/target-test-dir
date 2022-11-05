@@ -13,4 +13,4 @@ proc-macro = true
 
 [dependencies.target-test-dir-support]
 path = "../support"
-version = "0.1.0"
+version = "0.1.1"
