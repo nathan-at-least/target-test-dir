@@ -19,14 +19,15 @@ use target_test_dir::test_with_dir;
 use std::path::PathBuf;
 
 #[test_with_dir]
-fn write_and_read_hello_world(testdir: PathBuf) {
+fn write_and_read_hello_world(testdir: PathBuf) -> std::io::Result<()> {
     let hwpath = testdir.join("hello_world.txt");
-    std::fs::write(&hwpath, "Hello World!").unwrap();
+    std::fs::write(&hwpath, "Hello World!")?;
 
-    let bytes = std::fs::read(hwpath).unwrap();
+    let bytes = std::fs::read(hwpath)?;
     let output = String::from_utf8(bytes).unwrap();
 
     assert_eq!(&output, "Hello World!");
+    Ok(())
 }
 ```
 
