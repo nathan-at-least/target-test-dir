@@ -1,4 +1,7 @@
-#![doc = include_str!("../../README.md")]
+//! A support crate for the `target-test-dir` crate
+//!
+//! This crate provides [get_base_test_dir] which can be used independently of the proc macro, as
+//! well as [transform_test_with_dir] which implements the actual macro transformation.
 
 mod basedir;
 mod procmacro;

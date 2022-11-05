@@ -1,9 +1,18 @@
 use once_cell::sync::OnceCell;
 use std::path::{Path, PathBuf};
 
-/// The first time this is called in a process, it will remove any pre-existing directory. This
-/// design aims to leave test data available for inspection after a test run, while also ensuring
-/// all of the contents come from the same test process run.
+/// Return a [Path] to a `test-data` directory inside the crate or workspace `target/` directory
+///
+/// This function implicitly assumes the current executable resides within the `target/` directory
+/// which is the case for test binaries. If it cannot find the `target/` directory it will panic.
+///
+/// It prints diagnostic information to `stderr`.
+///
+/// The first time this is called in a process, it will remove any pre-existing `test-data`
+/// directory, then create a new directory. This design aims to leave test data available
+/// for inspection after a test run, while also ensuring all of the contents come from the same
+/// test process run. This function is thread-safe via [OnceCell], which supports the primary use
+/// case of being used for multiple `#[test]` functions which may be invoked concurrently.
 pub fn get_base_test_dir() -> &'static Path {
     static DIR: OnceCell<PathBuf> = OnceCell::new();
 
@@ -42,4 +51,3 @@ fn get_target_dir() -> std::io::Result<PathBuf> {
 
 #[cfg(test)]
 mod tests;
-

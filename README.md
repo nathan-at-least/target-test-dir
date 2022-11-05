@@ -1,10 +1,10 @@
 # Target Test Directories
 
-The `target-test-dir` and `target-test-dir-support` crates provide a convenient proc-macro for tests which need a test-specific directory.
+The [target-test-dir](crate) crate provides a convenient proc-macro [macro@test_with_dir] for tests which need a test-specific directory.
 
 ## Example
 
-Your tests need to depend on both crates, so `Cargo.toml` includes:
+Your tests need to depend on both the [target-test-dir](crate) and [target-test-dir-support](target_test_dir_support) crates, so `Cargo.toml` includes:
 
 ```
 [dev-dependencies]

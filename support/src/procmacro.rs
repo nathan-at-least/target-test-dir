@@ -1,5 +1,9 @@
 use proc_macro2::TokenStream;
 
+/// Transform a token stream of a test function definition into a proper `#[test]` fn
+///
+/// This requires the input to be a fn item just like a standard `#[test]` function _except_ it
+/// takes a single [std::path::PathBuf] argument to an empty test-specific directory.
 pub fn transform_test_with_dir<TS>(input: TS) -> TS
 where
     TokenStream: From<TS>,
