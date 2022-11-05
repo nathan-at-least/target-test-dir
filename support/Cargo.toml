@@ -1,5 +1,6 @@
 [package]
 name = "target-test-dir-support"
+description = "Support for the `target-test-dir` proc-macro crate."
 version.workspace = true
 edition.workspace = true
 license-file.workspace = true
