@@ -1,7 +1,10 @@
 [package]
 name = "target-test-dir"
+description = "A proc-macro attribute for providing test-specific directories."
 version.workspace = true
 edition.workspace = true
+license-file.workspace = true
+repository.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -10,3 +13,4 @@ proc-macro = true
 
 [dependencies.target-test-dir-support]
 path = "../support"
+version = "0.1.1"
