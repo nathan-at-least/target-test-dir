@@ -1,4 +1,4 @@
-use crate::transform_test_with_dir;
+use super::transform_test_with_dir;
 use quote::quote;
 
 #[test]
@@ -15,7 +15,7 @@ fn unit_return() {
         #[test]
         fn my_test() {
             let testdir =
-            ::target_test_dir_support::get_base_test_dir()
+            ::target_test_dir::get_base_test_dir()
                 .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
 
             match std::fs::create_dir(&testdir) {
@@ -51,7 +51,7 @@ fn result_return() {
         #[test]
         fn my_test() -> std::io::Result<()> {
             let testdir =
-            ::target_test_dir_support::get_base_test_dir()
+            ::target_test_dir::get_base_test_dir()
                 .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
 
             match std::fs::create_dir(&testdir) {
