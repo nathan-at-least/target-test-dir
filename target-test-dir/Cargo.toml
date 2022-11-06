@@ -8,9 +8,9 @@ repository.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-proc-macro = true
+[dependencies]
+once_cell.workspace = true
 
-[dependencies.target-test-dir-support]
-path = "../support"
-version = "0.1.1"
+[dependencies.target-test-dir-macro]
+path = "../macro"
+version = "^0.2.0"

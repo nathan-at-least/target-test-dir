@@ -39,16 +39,16 @@ dependencies = [
 
 [[package]]
 name = "target-test-dir"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
- "target-test-dir-support",
+ "once_cell",
+ "target-test-dir-macro",
 ]
 
 [[package]]
-name = "target-test-dir-support"
-version = "0.1.0"
+name = "target-test-dir-macro"
+version = "0.2.0"
 dependencies = [
- "once_cell",
  "proc-macro2",
  "quote",
  "syn",

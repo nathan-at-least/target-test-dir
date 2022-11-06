@@ -1,6 +1,6 @@
 [package]
-name = "target-test-dir-support"
-description = "Support for the `target-test-dir` proc-macro crate."
+name = "target-test-dir-macro"
+description = "A proc-macro attribute implementation for providing test-specific directories (use `target-test-dir`)."
 version.workspace = true
 edition.workspace = true
 license-file.workspace = true
@@ -8,8 +8,10 @@ repository.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+proc-macro = true
+
 [dependencies]
-once_cell.workspace = true
 proc-macro2.workspace = true
 quote.workspace = true
 syn.workspace = true

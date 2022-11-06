@@ -41,7 +41,7 @@ fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn:
         #[test]
         fn #testname() #output {
             let testdir =
-            ::target_test_dir_support::get_base_test_dir()
+            ::target_test_dir::get_base_test_dir()
                 .join(format!("{}-{}", module_path!().replace("::", "-"), #testnamestr));
 
             match std::fs::create_dir(&testdir) {
