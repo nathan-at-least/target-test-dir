@@ -14,18 +14,19 @@ fn unit_return() {
     let expected = quote! {
         #[test]
         fn my_test() {
-            let testdir =
-            ::target_test_dir::get_base_test_dir()
-                .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
+            my_test_impl(
+                {
+                    let testdir =
+                    ::target_test_dir::get_base_test_dir()
+                        .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
 
-            match std::fs::create_dir(&testdir) {
-                Ok(()) => {}
-                Err(e) => {
-                    panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    if let Some(e) = std::fs::create_dir(&testdir).err() {
+                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    };
+
+                    testdir
                 }
-            }
-
-            my_test_impl(testdir)
+            )
         }
 
         fn my_test_impl(testdir: PathBuf) {
@@ -50,18 +51,19 @@ fn result_return() {
     let expected = quote! {
         #[test]
         fn my_test() -> std::io::Result<()> {
-            let testdir =
-            ::target_test_dir::get_base_test_dir()
-                .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
+            my_test_impl(
+                {
+                    let testdir =
+                    ::target_test_dir::get_base_test_dir()
+                        .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
 
-            match std::fs::create_dir(&testdir) {
-                Ok(()) => {}
-                Err(e) => {
-                    panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    if let Some(e) = std::fs::create_dir(&testdir).err() {
+                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    };
+
+                    testdir
                 }
-            }
-
-            my_test_impl(testdir)
+            )
         }
 
         fn my_test_impl(testdir: PathBuf) -> std::io::Result<()> {
