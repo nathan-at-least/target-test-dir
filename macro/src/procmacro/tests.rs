@@ -128,5 +128,14 @@ fn assert_tokens_eq(expected: TokenStream, actual: TokenStream) {
 }
 
 fn prettify(ts: TokenStream) -> String {
-    prettyplease::unparse(&syn::parse2::<syn::File>(ts).unwrap())
+    let tsstr = ts.to_string();
+    match syn::parse2::<syn::File>(ts) {
+        Ok(f) => prettyplease::unparse(&f),
+        Err(e) => panic!(
+            "internal parse error:\ntokens: {:#?}\nsource: {:?}\ndetail: {}",
+            tsstr,
+            e.span().source_text(),
+            e
+        ),
+    }
 }
