@@ -36,22 +36,24 @@ fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn:
     // Propagate the return type:
     let output = implfn.sig.output.clone();
 
-    // TODO: propagate the user test return type.
     Ok(quote! {
         #[test]
         fn #testname() #output {
-            let testdir =
-            ::target_test_dir::get_base_test_dir()
-                .join(format!("{}-{}", module_path!().replace("::", "-"), #testnamestr));
+            #implname (
+                // We initialize and pass the testdir in a local scope to avoid collutions in
+                // #testnate scope:
+                {
+                    let testdir =
+                    ::target_test_dir::get_base_test_dir()
+                        .join(format!("{}-{}", module_path!().replace("::", "-"), #testnamestr));
 
-            match std::fs::create_dir(&testdir) {
-                Ok(()) => {}
-                Err(e) => {
-                    panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    if let Some(e) = std::fs::create_dir(&testdir).err() {
+                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+                    };
+
+                    testdir
                 }
-            }
-
-            #implname (testdir)
+            )
         }
 
         #implfn
