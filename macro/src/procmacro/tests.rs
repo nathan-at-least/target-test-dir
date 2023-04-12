@@ -5,7 +5,8 @@ use quote::quote;
 #[test]
 fn no_args_unit_return() {
     let input = quote! {
-        fn my_test(testdir: PathBuf) {
+        fn my_test() {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
         }
     };
@@ -13,24 +14,15 @@ fn no_args_unit_return() {
     let output = transform_with_test_dir(input);
 
     let expected = quote! {
-        #[test]
+        #[::target_test_dir::named]
         fn my_test() {
-            my_test_impl(
-                {
-                    let testdir =
-                    ::target_test_dir::get_base_test_dir()
-                        .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
-
-                    if let Some(e) = std::fs::create_dir(&testdir).err() {
-                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
-                    };
-
-                    testdir
+            macro_rules! get_test_dir {
+                () => {
+                    ::target_test_dir::get_test_dir(module_path!(), function_name!())
                 }
-            )
-        }
+            }
 
-        fn my_test_impl(testdir: PathBuf) {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
         }
     };
@@ -41,7 +33,8 @@ fn no_args_unit_return() {
 #[test]
 fn no_args_result_return() {
     let input = quote! {
-        fn my_test(testdir: PathBuf) -> std::io::Result<()> {
+        fn my_test() -> std::io::Result<()> {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
             Ok(())
         }
@@ -50,24 +43,15 @@ fn no_args_result_return() {
     let output = transform_with_test_dir(input);
 
     let expected = quote! {
-        #[test]
+        #[::target_test_dir::named]
         fn my_test() -> std::io::Result<()> {
-            my_test_impl(
-                {
-                    let testdir =
-                    ::target_test_dir::get_base_test_dir()
-                        .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
-
-                    if let Some(e) = std::fs::create_dir(&testdir).err() {
-                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
-                    };
-
-                    testdir
+            macro_rules! get_test_dir {
+                () => {
+                    ::target_test_dir::get_test_dir(module_path!(), function_name!())
                 }
-            )
-        }
+            }
 
-        fn my_test_impl(testdir: PathBuf) -> std::io::Result<()> {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
             Ok(())
         }
@@ -79,7 +63,8 @@ fn no_args_result_return() {
 #[test]
 fn extra_args_unit_return() {
     let input = quote! {
-        fn my_test(s: &str, i: i64, testdir: PathBuf) -> std::io::Result<()> {
+        fn my_test(s: &str, i: i64) -> std::io::Result<()> {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
             assert_eq!(i, i64::from_str(s).unwrap());
             Ok(())
@@ -89,26 +74,15 @@ fn extra_args_unit_return() {
     let output = transform_with_test_dir(input);
 
     let expected = quote! {
-        #[test]
+        #[::target_test_dir::named]
         fn my_test(s: &str, i: i64) -> std::io::Result<()> {
-            my_test_impl(
-                s,
-                i,
-                {
-                    let testdir =
-                    ::target_test_dir::get_base_test_dir()
-                        .join(format!("{}-{}", module_path!().replace("::", "-"), "my_test"));
-
-                    if let Some(e) = std::fs::create_dir(&testdir).err() {
-                        panic!("Could not create test dir {:?}: {}", testdir.display(), e);
-                    };
-
-                    testdir
+            macro_rules! get_test_dir {
+                () => {
+                    ::target_test_dir::get_test_dir(module_path!(), function_name!())
                 }
-            )
-        }
+            }
 
-        fn my_test_impl(s: &str, i: i64, testdir: PathBuf) -> std::io::Result<()> {
+            let testdir = get_test_dir!();
             assert!(testdir.is_dir());
             assert_eq!(i, i64::from_str(s).unwrap());
             Ok(())
