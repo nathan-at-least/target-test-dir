@@ -1,4 +1,4 @@
-use super::transform_test_with_dir;
+use super::transform_with_test_dir;
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -10,7 +10,7 @@ fn no_args_unit_return() {
         }
     };
 
-    let output = transform_test_with_dir(input);
+    let output = transform_with_test_dir(input);
 
     let expected = quote! {
         #[test]
@@ -47,7 +47,7 @@ fn no_args_result_return() {
         }
     };
 
-    let output = transform_test_with_dir(input);
+    let output = transform_with_test_dir(input);
 
     let expected = quote! {
         #[test]
@@ -86,7 +86,7 @@ fn extra_args_unit_return() {
         }
     };
 
-    let output = transform_test_with_dir(input);
+    let output = transform_with_test_dir(input);
 
     let expected = quote! {
         #[test]

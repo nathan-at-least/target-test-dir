@@ -1,6 +1,6 @@
 //! # Target Test Directories
 //!
-//! This [target-test-dir](crate) crate provides a convenient proc-macro [macro@test_with_dir] for tests which need a test-specific directory.
+//! This [target-test-dir](crate) crate provides a convenient proc-macro [macro@with_test_dir] for tests which need a test-specific directory.
 //!
 //! ## Example
 //!
@@ -11,14 +11,14 @@
 //! target-test-dir = "0.2.0"
 //! ```
 //!
-//! Then in any test which needs a directory, use the [macro@test_with_dir] proc-macro attribute on a
+//! Then in any test which needs a directory, use the [macro@with_test_dir] proc-macro attribute on a
 //! test-like fn which takes a single [std::path::PathBuf] argument to the test-specific directory:
 //!
 //! ```
-//! use target_test_dir::test_with_dir;
+//! use target_test_dir::with_test_dir;
 //! use std::path::PathBuf;
 //!
-//! #[test_with_dir]
+//! #[with_test_dir]
 //! fn write_and_read_hello_world(testdir: PathBuf) -> std::io::Result<()> {
 //!     let hwpath = testdir.join("hello_world.txt");
 //!     std::fs::write(&hwpath, "Hello World!")?;
@@ -51,4 +51,4 @@ mod testdir;
 pub use self::basedir::get_base_test_dir;
 pub use self::testdir::{get_test_dir, get_test_dir_name, try_get_test_dir};
 pub use function_name::named;
-pub use target_test_dir_macro::test_with_dir;
+pub use target_test_dir_macro::with_test_dir;

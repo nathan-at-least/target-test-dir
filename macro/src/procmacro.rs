@@ -6,19 +6,19 @@ use proc_macro2::TokenStream;
 /// takes a single [std::path::PathBuf] argument to an empty test-specific directory. Any return
 /// type is propagated, although any errors during setting up the test directory cause panics.
 ///
-/// Almost every use of this function would be via the `test_with_dir` macro within the
+/// Almost every use of this function would be via the `with_test_dir` macro within the
 /// `target-test-dir` crate; see that crate for examples.
-pub fn transform_test_with_dir<TS>(input: TS) -> TS
+pub fn transform_with_test_dir<TS>(input: TS) -> TS
 where
     TokenStream: From<TS>,
     TS: From<TokenStream>,
 {
     let input = TokenStream::from(input);
 
-    TS::from(transform_test_with_dir_inner(input).unwrap_or_else(syn::Error::into_compile_error))
+    TS::from(transform_with_test_dir_inner(input).unwrap_or_else(syn::Error::into_compile_error))
 }
 
-fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn::parse::Error> {
+fn transform_with_test_dir_inner(input: TokenStream) -> Result<TokenStream, syn::parse::Error> {
     use quote::quote;
     use syn::{parse2, Ident, ItemFn};
 

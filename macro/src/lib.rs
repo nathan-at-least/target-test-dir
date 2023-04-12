@@ -12,8 +12,8 @@ use proc_macro::TokenStream;
 /// The annotated function must behave like a standard `#[test]` fn with the addition of a single
 /// [std::path::PathBuf] argument. Any return type is propagated.
 #[proc_macro_attribute]
-pub fn test_with_dir(_args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn with_test_dir(_args: TokenStream, input: TokenStream) -> TokenStream {
     // TODO: parse _args.
 
-    self::procmacro::transform_test_with_dir(input)
+    self::procmacro::transform_with_test_dir(input)
 }
