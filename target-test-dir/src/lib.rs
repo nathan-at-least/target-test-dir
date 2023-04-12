@@ -46,6 +46,9 @@
 //! - They live under `target/` so they should be ignored by Cargo's revision control conventions and cleaned up with `cargo clean`.
 
 mod basedir;
+mod testdir;
 
 pub use self::basedir::get_base_test_dir;
+pub use self::testdir::{get_test_dir, get_test_dir_name, try_get_test_dir};
+pub use function_name::named;
 pub use target_test_dir_macro::test_with_dir;

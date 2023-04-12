@@ -1,3 +1,4 @@
+use anyhow_std::PathAnyhow;
 use once_cell::sync::OnceCell;
 use std::path::{Path, PathBuf};
 
@@ -16,18 +17,21 @@ use std::path::{Path, PathBuf};
 pub fn get_base_test_dir() -> &'static Path {
     static DIR: OnceCell<PathBuf> = OnceCell::new();
 
-    DIR.get_or_init(|| init_base_test_dir().expect("could not initialize base test data directory"))
-        .as_path()
+    DIR.get_or_init(|| match init_base_test_dir() {
+        Ok(pathbuf) => pathbuf,
+        Err(e) => panic!("Failed to initialize test data directory:\n{e:?}"),
+    })
+    .as_path()
 }
 
-fn init_base_test_dir() -> std::io::Result<PathBuf> {
+fn init_base_test_dir() -> anyhow::Result<PathBuf> {
     let pb = get_target_dir()?.join("test-data");
     if pb.is_dir() {
         eprintln!("Removing {:?} from previous test run...", pb.display());
-        std::fs::remove_dir_all(&pb)?;
+        pb.remove_dir_all_anyhow()?;
     }
     eprintln!("Creating {:?}...", pb.display());
-    std::fs::create_dir(&pb)?;
+    pb.create_dir_anyhow()?;
     Ok(pb)
 }
 
@@ -35,18 +39,22 @@ fn init_base_test_dir() -> std::io::Result<PathBuf> {
 ///
 /// Precondition: the executable path resides within the `target/` directory. This is the case for
 /// standard `cargo test` runs, AFAIK.
-fn get_target_dir() -> std::io::Result<PathBuf> {
-    for candidate in std::env::current_exe()?.ancestors() {
-        if candidate.is_dir() && candidate.file_name().and_then(|os| os.to_str()) == Some("target")
-        {
-            return Ok(candidate.to_path_buf());
+fn get_target_dir() -> anyhow::Result<PathBuf> {
+    let mut not_found = vec![];
+    for candidate_parent in Path::new(&std::env::var("CARGO_MANIFEST_DIR")?).ancestors() {
+        let candidate = candidate_parent.join("target");
+        if candidate.is_dir() {
+            return Ok(candidate);
+        } else {
+            not_found.push(candidate);
         }
     }
 
-    Err(std::io::Error::new(
-        std::io::ErrorKind::Other,
-        "Cargo 'target/' directory not found.",
-    ))
+    let mut e = anyhow::anyhow!("Cargo 'target/' directory not found.");
+    for candidate in not_found {
+        e = e.context(format!("candidate: {:?}", candidate.display()));
+    }
+    Err(e)
 }
 
 #[cfg(test)]

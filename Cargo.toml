@@ -11,6 +11,9 @@ license-file = "LICENSE"
 repository = "https://github.com/nathan-at-least/target-test-dir"
 
 [workspace.dependencies]
+anyhow = "1.0.70"
+anyhow-std = "0.1.1"
+function_name = "0.3.0"
 once_cell = "1.15.0"
 proc-macro2 = "1.0.47"
 quote = "1.0.21"
