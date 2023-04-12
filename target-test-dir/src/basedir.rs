@@ -4,8 +4,9 @@ use std::path::{Path, PathBuf};
 
 /// Return a [Path] to a `test-data` directory inside the crate or workspace `target/` directory
 ///
-/// This function implicitly assumes the current executable resides within the `target/` directory
-/// which is the case for test binaries. If it cannot find the `target/` directory it will panic.
+/// This function relies on the `$CARGO_MANIFEST_DIR` environment variable, which is set in unit
+/// tests, integration tests, and doc tests. If it cannot find the `target/` directory it
+/// will panic.
 ///
 /// It prints diagnostic information to `stderr`.
 ///
