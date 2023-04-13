@@ -17,3 +17,6 @@ once_cell.workspace = true
 [dependencies.target-test-dir-macro]
 path = "../macro"
 version = "^0.2.0"
+
+[dev-dependencies]
+test-case.workspace = true
