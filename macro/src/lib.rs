@@ -6,14 +6,13 @@ mod procmacro;
 
 use proc_macro::TokenStream;
 
-/// Annotate a test function which takes a single [std::path::PathBuf] argument which will be a
-/// freshly created directory
+/// Provide a `get_test_dir` macro within the body of the annotated function
 ///
-/// The annotated function must behave like a standard `#[test]` fn with the addition of a single
-/// [std::path::PathBuf] argument. Any return type is propagated.
+/// This macro must be used via the `target-test-dir` crate, rather than directly from
+/// [target-test-dir-macro]. The usage documentation lives in `target-test-dir`.
 #[proc_macro_attribute]
-pub fn test_with_dir(_args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn with_test_dir(_args: TokenStream, input: TokenStream) -> TokenStream {
     // TODO: parse _args.
 
-    self::procmacro::transform_test_with_dir(input)
+    self::procmacro::transform_with_test_dir(input)
 }

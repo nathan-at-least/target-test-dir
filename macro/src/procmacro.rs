@@ -6,55 +6,47 @@ use proc_macro2::TokenStream;
 /// takes a single [std::path::PathBuf] argument to an empty test-specific directory. Any return
 /// type is propagated, although any errors during setting up the test directory cause panics.
 ///
-/// Almost every use of this function would be via the `test_with_dir` macro within the
+/// Almost every use of this function would be via the `with_test_dir` macro within the
 /// `target-test-dir` crate; see that crate for examples.
-pub fn transform_test_with_dir<TS>(input: TS) -> TS
+pub fn transform_with_test_dir<TS>(input: TS) -> TS
 where
     TokenStream: From<TS>,
     TS: From<TokenStream>,
 {
     let input = TokenStream::from(input);
 
-    TS::from(transform_test_with_dir_inner(input).unwrap_or_else(syn::Error::into_compile_error))
+    TS::from(transform_with_test_dir_inner(input).unwrap_or_else(syn::Error::into_compile_error))
 }
 
-fn transform_test_with_dir_inner(input: TokenStream) -> Result<TokenStream, syn::parse::Error> {
+fn transform_with_test_dir_inner(input: TokenStream) -> Result<TokenStream, syn::parse::Error> {
     use quote::quote;
-    use syn::{parse2, Ident, ItemFn};
+    use syn::{parse2, ItemFn};
 
-    let mut implfn: ItemFn = parse2(input)?;
+    let ItemFn {
+        attrs,
+        vis,
+        sig,
+        mut block,
+    }: ItemFn = parse2(input)?;
 
-    // Save the textual name for a generated wrapper function so that the actual #[test] has the
-    // user-specified name:
-    let testname = implfn.sig.ident;
-    let testnamestr = testname.to_string();
-
-    // Rename the user-provided implementation function to be wrapped:
-    let implname = Ident::new(&format!("{}_impl", &testnamestr), testname.span());
-    implfn.sig.ident = implname.clone();
-
-    // Propagate the return type:
-    let output = implfn.sig.output.clone();
-
-    // TODO: propagate the user test return type.
-    Ok(quote! {
-        #[test]
-        fn #testname() #output {
-            let testdir =
-            ::target_test_dir::get_base_test_dir()
-                .join(format!("{}-{}", module_path!().replace("::", "-"), #testnamestr));
-
-            match std::fs::create_dir(&testdir) {
-                Ok(()) => {}
-                Err(e) => {
-                    panic!("Could not create test dir {:?}: {}", testdir.display(), e);
+    // Insert the `get_test_dir` macro:
+    block.stmts.insert(
+        0,
+        syn::parse2::<syn::Stmt>(quote! {
+            macro_rules! get_test_dir {
+                () => {
+                    ::target_test_dir::get_test_dir(module_path!(), function_name!())
                 }
             }
+        })?,
+    );
 
-            #implname (testdir)
-        }
-
-        #implfn
+    Ok(quote! {
+        #[::target_test_dir::named]
+        #( #attrs )*
+        #vis
+        #sig
+        #block
     })
 }
 
